@@ -1,6 +1,5 @@
 === LinkClicky ===
 Contributors: ludwigmedia
-Donate link: http://lud.live/utmtrackerdonate
 Tags: utm parameters, referrer tracking, utm, gclid, utm tracking, analytics
 Requires at least: 6.1
 Tested up to: 6.1
