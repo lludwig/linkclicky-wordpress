@@ -29,20 +29,21 @@ use Pdp\Domain;
 
 class LinkClicky_Admin {
 	public $settings_slug = 'linkclicky';
+	private $default_domain_name ='';
 
 	public function __construct() {
 		$publicSuffixList = Rules::fromPath(__DIR__ . '/../data/public_suffix_list.dat');
-		$domain = Domain::fromIDNA2008($this->urlToDomain(get_site_url()));
-
+		$domain = Domain::fromIDNA2008( $this->urlToDomain( get_site_url() ) );
 		$result = $publicSuffixList->resolve($domain);
+		// add leading period
+		$this->default_domain_name = '.'.$result->registrableDomain()->toString(); 
 
 		$this->init();
-		$this->default_domain_name = '.'.$result->registrableDomain()->toString(); 
 	}
 
 	public function init() {
 		// create and set defaults for the options
-		add_option( 'linkclicky-domain-name' , $this->urlToDomain(get_site_url()));
+		add_option( 'linkclicky-domain-name' , $this->default_domainname );
 		add_option( 'linkclicky-ttl' , 30 );
 
 		// register the option types
@@ -150,7 +151,6 @@ class LinkClicky_Admin {
 	private function urlToDomain($url) {
 		return implode(array_slice(explode('/', preg_replace('/https?:\/\/(www\.)?/', '', $url)), 0, 1));
 	}
-
 }
 
 $linkclicky_admin = new LinkClicky_Admin();
