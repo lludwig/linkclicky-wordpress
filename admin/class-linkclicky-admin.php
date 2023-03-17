@@ -43,7 +43,7 @@ class LinkClicky_Admin {
 
 	public function init() {
 		// create and set defaults for the options
-		add_option( 'linkclicky-domain-name' , $this->default_domainname );
+		add_option( 'linkclicky-domain-name' , $this->default_domain_name );
 		add_option( 'linkclicky-ttl' , 30 );
 
 		// register the option types
