@@ -20,12 +20,24 @@
  * @subpackage linkclicky/admin
  * @author     Ludwig Media <support@linkclicky.com>
  */
+
+require (__DIR__ . '/../vendor/autoload.php');
+
+use Pdp\Rules;
+use Pdp\Domain;
+
+
 class LinkClicky_Admin {
 	public $settings_slug = 'linkclicky';
 
 	public function __construct() {
+		$publicSuffixList = Rules::fromPath(__DIR__ . '/../data/public_suffix_list.dat');
+		$domain = Domain::fromIDNA2008($this->urlToDomain(get_site_url()));
+
+		$result = $publicSuffixList->resolve($domain);
+
 		$this->init();
-		$this->default_domain_name = $this->urlToDomain(get_site_url());
+		$this->default_domain_name = '.'.$result->registrableDomain()->toString(); 
 	}
 
 	public function init() {

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LinkClicky
  * Description: WordPress plugin to compliment LinkClicky service
- * Version:     1.0.7
+ * Version:     1.0.8
  * Author:      Ludwig Media
  * Author URI:  https://linkclicky.com/
  * License:     GNU General Public License v3 or later
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 if (!defined('LINKCLICKY_VERSION_NUM'))
-	define('LINKCLICKY_VERSION_NUM', '1.0.7');
+	define('LINKCLICKY_VERSION_NUM', '1.0.8');
 
 if ( ! defined( 'LINKCLICKY_PATH' ) ) {
         define( 'LINKCLICKY_PATH', plugin_dir_path( __FILE__ ) );
