@@ -21,7 +21,7 @@
  * @author     Ludwig Media <support@linkclicky.com>
  */
 
-require (__DIR__ . '/../vendor/autoload.php');
+require (__DIR__ . '/../includes/vendor/autoload.php');
 
 use Pdp\Rules;
 use Pdp\Domain;

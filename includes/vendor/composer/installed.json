@@ -1,14 +1,9 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "ad8e829434adb39a7ecda7c2ae19f807",
     "packages": [
         {
             "name": "jeremykendall/php-domain-parser",
             "version": "6.1.2",
+            "version_normalized": "6.1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeremykendall/php-domain-parser.git",
@@ -44,12 +39,14 @@
                 "psr/http-factory-implementation": "To use the storage functionnality which depends on PSR-17",
                 "psr/simple-cache-implementation": "To use the storage functionnality which depends on PSR-16"
             },
+            "time": "2022-09-29T05:04:10+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "6.x-dev"
                 }
             },
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Pdp\\": "src/"
@@ -97,21 +94,9 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-09-29T05:04:10+00:00"
+            "install-path": "../jeremykendall/php-domain-parser"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
-    "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": {
-        "php": ">=7.4"
-    },
-    "platform-dev": [],
-    "platform-overrides": {
-        "php": "7.4.0"
-    },
-    "plugin-api-version": "2.3.0"
+    "dev": true,
+    "dev-package-names": []
 }
