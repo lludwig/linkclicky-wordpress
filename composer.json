@@ -1,7 +1,7 @@
 {
     "require": {
         "php": ">=7.4",
-        "jeremykendall/php-domain-parser": "^6.0"
+        "guzzlehttp/guzzle": "^7.8"
     },
     "config": {
         "vendor-dir": "includes/vendor",
