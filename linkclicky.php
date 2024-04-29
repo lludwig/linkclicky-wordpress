@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LinkClicky
  * Description: WordPress plugin to compliment LinkClicky service
- * Version:     1.1.2
+ * Version:     1.1.3
  * Author:      Ludwig Media
  * Author URI:  https://linkclicky.com/
  * License:     GNU General Public License v3 or later
