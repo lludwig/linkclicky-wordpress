@@ -28,7 +28,7 @@ function linkclicky_sessions_set_cookie( string $sessionid ) {
       'domain'   => get_option('linkclicky-domain-name'),
       'secure'   => false,
       'httponly' => false,
-      'samesite' => 'None',
+      'samesite' => 'Strict',
    ]);
    // store it in a cookie session since PHP doesn't do this for the same page view event.
    $_COOKIE[LC_SESSIONS_COOKIE]=$sessionid;
@@ -69,9 +69,10 @@ function linkclicky_sessions_init() {
 
       $lc_server = get_option('linkclicky-api-server');
       $lc_key = get_option('linkclicky-api-key');
-      $lc = new LinkClicky($lc_server, $lc_key);
-
-      $lc->SessionAdd($sessionid, linkclicky_get_IP());
+      if (!empty($lc_server) && !empty($lc_key)) {
+         $lc = new LinkClicky($lc_server, $lc_key);
+         $lc->SessionAdd($sessionid, linkclicky_get_IP());
+      }
       do_action( 'qm/stop', 'linkclicky_sessions_init' );
    }
 }
