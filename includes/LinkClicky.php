@@ -209,12 +209,12 @@ class LinkClicky {
 	// SessionAdd
 	//
 
-   public function SessionAdd(string $sessionid, string $ip_address, array $data = null ) {
+   public function SessionAdd(string $sessionid, string $ip_address, array $data = [] ) {
 
       $options = [
             'sessionid'  => $sessionid,
             'ip_address' => $ip_address,
-            'data'       => json_encode($data),
+            'data'       => json_encode($data) ?? null,
       ];
 
 		$endpoint = $this->apiBase.'sessionadd/'.array_to_http_get($options,true);
