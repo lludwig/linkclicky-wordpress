@@ -221,7 +221,7 @@ class LinkClicky {
 
 		try {
 			$promise = $this->guzzle->requestAsync('GET', $endpoint, [
-            'timeout' => 0.1,
+            'timeout' => 1.0,
 				'headers' => [
 					'User-Agent' => $this->useragent,
 					'Accept'     => 'application/json',
@@ -230,9 +230,8 @@ class LinkClicky {
          ]);
          $promise->wait();
       }
-      // don't error 
 		catch ( \Exception $e ) {
-		   return( true );
+		   return( false );
 		}
 		return( true );
 	}

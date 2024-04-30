@@ -59,13 +59,12 @@ function linkclicky_sanitize_ip($ip ) {
 
 add_action( 'send_headers', 'linkclicky_sessions_init' );
 function linkclicky_sessions_init() {
+   do_action( 'qm/start', 'linkclicky_sessions_init' );
    // get cookie
    $sessionid = $_COOKIE[LC_SESSIONS_COOKIE] ?? null;
 
    if(empty($sessionid)) {
-      do_action( 'qm/start', 'linkclicky_sessions_init' );
       $sessionid = linkclicky_create_sessionid();
-      linkclicky_sessions_set_cookie($sessionid);
 
       $lc_server = get_option('linkclicky-api-server');
       $lc_key = get_option('linkclicky-api-key');
@@ -73,9 +72,9 @@ function linkclicky_sessions_init() {
          $lc = new LinkClicky($lc_server, $lc_key);
          $lc->SessionAdd($sessionid, linkclicky_get_IP());
       }
-      do_action( 'qm/stop', 'linkclicky_sessions_init' );
    }
-   else {
-      linkclicky_sessions_set_cookie($sessionid);
-   }
+
+   linkclicky_sessions_set_cookie($sessionid);
+
+   do_action( 'qm/stop', 'linkclicky_sessions_init' );
 }
