@@ -59,9 +59,24 @@ function linkclicky_sanitize_ip($ip ) {
 
 add_action( 'send_headers', 'linkclicky_sessions_init' );
 function linkclicky_sessions_init() {
+
    do_action( 'qm/start', 'linkclicky_sessions_init' );
    // get cookie
    $sessionid = $_COOKIE[LC_SESSIONS_COOKIE] ?? null;
+
+   $woopra_domain = get_option('linkclicky-woopra-domain');
+
+   if (!empty($woopra_domain)) { 
+      $woopra = new WoopraTracker([
+         'domain'            => $woopra_domain,
+         'cookie_domain'     => get_option('linkclicky-domain-name'),
+         'download_tracking' => true,
+         'outgoing_tracking' => true,
+         'idle_timeout'      => 3600000,
+      ]);
+
+      $woopra->set_woopra_cookie();
+   }
 
    if(empty($sessionid)) {
       $sessionid = linkclicky_create_sessionid();
@@ -70,7 +85,14 @@ function linkclicky_sessions_init() {
       $lc_key = get_option('linkclicky-api-key');
       if (!empty($lc_server) && !empty($lc_key)) {
          $lc = new LinkClicky($lc_server, $lc_key);
-         $lc->SessionAdd($sessionid, linkclicky_get_IP());
+
+         $data = [];
+         if (!empty($woopra_domain)) { 
+            $data = [
+               'wootracker' => $woopra->current_config['cookie_value'] ?? null
+            ];
+         }
+         $lc->SessionAdd($sessionid, linkclicky_get_IP(), $data);
       }
    }
 

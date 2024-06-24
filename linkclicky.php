@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LinkClicky
  * Description: WordPress plugin to compliment LinkClicky service
- * Version:     1.1.5
+ * Version:     1.1.6
  * Author:      Ludwig Media
  * Author URI:  https://linkclicky.com/
  * License:     GNU General Public License v3 or later
@@ -12,17 +12,19 @@
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 if (!defined('LINKCLICKY_VERSION_NUM'))
-	define('LINKCLICKY_VERSION_NUM', '1.0.9');
+	define('LINKCLICKY_VERSION_NUM', '1.1.6');
 
 if ( ! defined( 'LINKCLICKY_PATH' ) ) {
         define( 'LINKCLICKY_PATH', plugin_dir_path( __FILE__ ) );
 } 
 
+require_once( LINKCLICKY_PATH . 'includes/vendor/autoload.php');
 require_once( LINKCLICKY_PATH . 'admin/class-linkclicky-admin.php' );
 require_once( LINKCLICKY_PATH . 'includes/shortcodes.php' );
 require_once( LINKCLICKY_PATH . 'includes/myfunctions.php' );
 require_once( LINKCLICKY_PATH . 'includes/sessions.php' );
 require_once( LINKCLICKY_PATH . 'includes/LinkClicky.php' );
+require_once( LINKCLICKY_PATH . 'includes/vendor/woopra/woopra/woopra_tracker.php');
 
 define('LC_SESSIONS_COOKIE','_lc_s');
 

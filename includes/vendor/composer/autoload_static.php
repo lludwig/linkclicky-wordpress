@@ -29,8 +29,8 @@ class ComposerStaticInit657b297e005e474e0837e4def4bf2310
     public static $prefixDirsPsr4 = array (
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -52,6 +52,7 @@ class ComposerStaticInit657b297e005e474e0837e4def4bf2310
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'WoopraTracker' => __DIR__ . '/..' . '/woopra/woopra/woopra_tracker.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

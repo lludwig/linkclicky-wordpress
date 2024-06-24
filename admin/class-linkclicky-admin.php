@@ -47,6 +47,7 @@ class LinkClicky_Admin {
 		register_setting( 'linkclicky', 'linkclicky-ttl', ['type' => 'number', 'description' => 'How long should the cookie be active in days.' ] );
 		register_setting( 'linkclicky', 'linkclicky-api-server', ['type' => 'string', 'description' => 'LinkClicky\'s URI' ] );
 		register_setting( 'linkclicky', 'linkclicky-api-key', ['type' => 'string', 'description' => 'LinkClicky\'s API Key' ] );
+		register_setting( 'linkclicky', 'linkclicky-woopra-domain', ['type' => 'string', 'description' => 'Woopra Domain' ] );
 
 		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
 		add_action( 'admin_init', [ $this, 'settings' ] );
@@ -68,6 +69,7 @@ class LinkClicky_Admin {
                 add_settings_field( 'linkclicky-ttl', 'Cookie Age', [$this, 'ttl_field'], 'linkclicky', 'linkclicky-section' );
                 add_settings_field( 'linkclicky-api-server', 'Linkclicky API Server', [$this, 'api_server'], 'linkclicky', 'linkclicky-section' );
                 add_settings_field( 'linkclicky-api-key', 'Linkclicky API Key', [$this, 'api_key'], 'linkclicky', 'linkclicky-section' );
+                add_settings_field( 'linkclicky-woopra-domain', 'Woopra Domain', [$this, 'woopra_domain'], 'linkclicky', 'linkclicky-section' );
         }
 
 	public function settings_section_description(){
@@ -109,6 +111,12 @@ class LinkClicky_Admin {
 
    public function api_key() {
       $output  = '<input id="linkclicky-api-key" type="text" name="linkclicky-api-key" value="'. get_option('linkclicky-api-key') .'" size="40">';
+      echo $output;
+   }
+
+   public function woopra_domain() {
+      $output  = '<input id="linkclicky-woopra-domain" type="text" name="linkclicky-woopra-domain" value="'. get_option('linkclicky-woopra-domain') .'" size="40">';
+      $output .= ' <small>If a domain is entered, LinkClicky will create a Woopra cookie.</small>';
       echo $output;
    }
 
