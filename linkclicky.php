@@ -1,14 +1,16 @@
 <?php 
 /**
- * Plugin Name: LinkClicky
- * Plugin URI: https://linkclicky.com/support/wordpress/
- * Description: WordPress plugin to compliment LinkClicky service
- * Version:     1.1.7
- * Author:      LinkClicky
- * Author URI:  https://linkclicky.com/
- * Update URI: https://linkclicky.com/support/wordpress/
- * License:     GNU General Public License v3 or later
- * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * Plugin Name:         LinkClicky
+ * Plugin URI:          https://linkclicky.com/support/wordpress/
+ * Description:         WordPress plugin to compliment LinkClicky service
+ * Version:             1.1.7
+ * Author:              LinkClicky
+ * Author URI:          https://linkclicky.com/
+ * Update URI:          https://linkclicky.com/support/wordpress/
+ * License:             GNU General Public License v3 or later
+ * License URI:         http://www.gnu.org/licenses/gpl-3.0.html
+ * Requires at least:   6.0.1
+ * Requires PHP:        8.1
  */
 
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
