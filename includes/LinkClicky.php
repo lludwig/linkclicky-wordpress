@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 class LinkClicky {
 	protected $Domain;
 	protected $apiBase;
-	protected $s2surl;
+	protected $eventurl;
 	protected $apiToken;
 	protected $filebase = '/linkclicky';
 	protected $useragent = 'LinkClickyBot/1.1';
@@ -18,7 +18,7 @@ class LinkClicky {
 	public function __construct(string $fqdn, string $apiToken) {
  		$this->Domain = $fqdn;
 		$this->apiBase = 'https://'.$fqdn.'/api/';
-		$this->s2surl = 'https://'.$fqdn.'/event/';
+		$this->eventurl = 'https://'.$fqdn.'/link/event/';
 		$this->apiToken = $apiToken;
 		
 		// build a new Guzzle
@@ -46,6 +46,38 @@ class LinkClicky {
 
 			if ( $results->getStatusCode() == 200 ) {
 				return($json->{'result'});
+			}
+			else {
+				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
+				return( (array) [] );
+			}
+		}
+		catch ( \Exception $e ) {
+			print "ENDPOINT: ". $endpoint . PHP_EOL;
+			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
+			print $e->getTraceAsString() . PHP_EOL;
+			return( (array) [] );
+		}
+		return( (array) [] );
+	}
+
+	public function LinkAdd(array $options = []):array {
+
+		$endpoint = $this->apiBase.'shorturl/'.array_to_http_get($options,true);
+
+		try {
+			$results = $this->guzzle->request('GET', $endpoint, [
+				'headers' => [
+					'User-Agent' => $this->useragent,
+					'Accept'     => 'application/json',
+					'Api-Token'  => $this->apiToken,
+				],
+			]);
+
+			$json = json_decode( $results->getBody() );
+
+			if ( $results->getStatusCode() == 200 ) {
+				return((array) $json);
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
@@ -209,30 +241,29 @@ class LinkClicky {
 	// SessionAdd
 	//
 
-   public function SessionAdd(string $sessionid, string $ip_address, array $data = [] ):bool {
-
-      $jsonbody = [
-            'sessionid'  => $sessionid,
-            'ip_address' => $ip_address,
-            'data'       => $data,
-      ];
+	public function SessionAdd(string $sessionid, string $ip_address, array $data = [] ):bool {
+		$jsonbody = [
+			'sessionid'  => $sessionid,
+			'ip_address' => $ip_address,
+			'data'       => $data,
+		];
 
 		$endpoint = $this->apiBase.'sessions/';
 
 		try {
 			$promise = $this->guzzle->requestAsync('POST', $endpoint, [
-            'timeout' => 1.0,
+				'timeout' => 1.0,
 				'headers' => [
 					'User-Agent' => $this->useragent,
 					'Accept'     => 'application/json',
 					'Api-Token'  => $this->apiToken,
 				],
 				'body' => json_encode($jsonbody),
-         ]);
-         $promise->wait();
-      }
-		catch ( \Exception $e ) {
-		   return( false );
+			]);
+			$promise->wait();
+		}
+      catch ( \Exception $e ) {
+			return( false );
 		}
 		return( true );
 	}
@@ -310,13 +341,12 @@ class LinkClicky {
 	}
 
 	//
-	// Postback
+	// Event
 	//
-	public function createPostback(array $options = []) {
+	public function createEvent(array $options = []) {
 		// make sure the required fields are set
-       	if ( $options['trackid'] != '' && $options['val'] !='' && $options['com'] !='' ) {
-			$endpoint = $this->s2surl.array_to_http_get($options,true);
-	
+     	if ( $options['trackid'] != '' && $options['val'] !='' && $options['com'] !='' ) {
+			$endpoint = $this->eventurl.array_to_http_get($options,true);
 			try {
 				$results = \Httpful\Request::get($endpoint)
 					->addHeader( 'User-Agent', $this->useragent )
@@ -339,7 +369,7 @@ class LinkClicky {
 	// Summary
 	//
 
-	public function Summary(array $options = []):array {
+	public function Summary(array $options = []):object {
 
 		$endpoint = $this->apiBase.'summary/'.array_to_http_get($options,true);
 
