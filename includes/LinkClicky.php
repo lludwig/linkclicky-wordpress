@@ -12,7 +12,7 @@ class LinkClicky {
 	protected $s2surl;
 	protected $apiToken;
 	protected $filebase = '/linkclicky';
-	protected $useragent = 'LinkClickyBot/1.0';
+	protected $useragent = 'LinkClickyBot/1.1';
 	protected $guzzle;
 
 	public function __construct(string $fqdn, string $apiToken) {
@@ -29,7 +29,7 @@ class LinkClicky {
 	// Links
 	//
 
-	public function Links(array $options = []) {
+	public function Links(array $options = []):array {
 
 		$endpoint = $this->apiBase.'links/'.array_to_http_get($options,true);
 
@@ -49,19 +49,19 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
-	public function LinkUpdate(array $options = []) {
+	public function LinkUpdate(array $options = []):array {
 
 		$endpoint = $this->apiBase.'linkupdate/'.array_to_http_get($options,true);
 
@@ -81,23 +81,23 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
 	//
 	// Integrations Systems
 	//
 
-	public function Integrations(array $options = []) {
+	public function Integrations(array $options = []):array {
 
 		$endpoint = $this->apiBase.'integrations/'.array_to_http_get($options,true);
 
@@ -117,23 +117,23 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
 	//
 	// Affiliate Systems
 	//
 
-	public function AffiliateSystems(array $options = []) {
+	public function AffiliateSystems(array $options = []):array {
 
 		$endpoint = $this->apiBase.'affiliatesystems/'.array_to_http_get($options,true);
 
@@ -153,23 +153,23 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
 	//
 	// Sessions
 	//
 
-   public function Sessions(string $sessionid) {
+   public function Sessions(string $sessionid):array {
 
       $options = [
             'sessionid' => $sessionid,
@@ -193,40 +193,41 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
 	//
 	// SessionAdd
 	//
 
-   public function SessionAdd(string $sessionid, string $ip_address, array $data = [] ) {
+   public function SessionAdd(string $sessionid, string $ip_address, array $data = [] ):bool {
 
-      $options = [
+      $jsonbody = [
             'sessionid'  => $sessionid,
             'ip_address' => $ip_address,
-            'data'       => json_encode($data) ?? null,
+            'data'       => $data,
       ];
 
-		$endpoint = $this->apiBase.'sessionadd/'.array_to_http_get($options,true);
+		$endpoint = $this->apiBase.'sessions/';
 
 		try {
-			$promise = $this->guzzle->requestAsync('GET', $endpoint, [
+			$promise = $this->guzzle->requestAsync('POST', $endpoint, [
             'timeout' => 1.0,
 				'headers' => [
 					'User-Agent' => $this->useragent,
 					'Accept'     => 'application/json',
 					'Api-Token'  => $this->apiToken,
 				],
+				'body' => json_encode($jsonbody),
          ]);
          $promise->wait();
       }
@@ -240,7 +241,7 @@ class LinkClicky {
 	// Clicks
 	//
 
-	public function Clicks(array $options = []) {
+	public function Clicks(array $options = []):array {
 
 		$endpoint = $this->apiBase.'clicks/'.array_to_http_get($options,true);
 
@@ -260,23 +261,23 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
 	//
 	// Events
 	//
 
-	public function Events(array $options = []) {
+	public function Events(array $options = []):array {
 
 		$endpoint = $this->apiBase.'events/'.array_to_http_get($options,true);
 
@@ -296,16 +297,16 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 
 	//
@@ -338,7 +339,7 @@ class LinkClicky {
 	// Summary
 	//
 
-	public function Summary(array $options = []) {
+	public function Summary(array $options = []):array {
 
 		$endpoint = $this->apiBase.'summary/'.array_to_http_get($options,true);
 
@@ -358,15 +359,15 @@ class LinkClicky {
 			}
 			else {
 				print 'ERROR: '.$results->getStatusCode().PHP_EOL;
-				return( [] );
+				return( (array) [] );
 			}
 		}
 		catch ( \Exception $e ) {
 			print "ENDPOINT: ". $endpoint . PHP_EOL;
 			print 'EXCEPTION: ' .  $e->getMessage() . PHP_EOL;
 			print $e->getTraceAsString() . PHP_EOL;
-			return( [] );
+			return( (array) [] );
 		}
-		return( [] );
+		return( (array) [] );
 	}
 }

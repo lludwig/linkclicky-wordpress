@@ -197,7 +197,7 @@ class WoopraTracker {
 	 * @return string
 	 */
 	private static function RandomString() {
-	    $characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	    $characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	    $randstring = "";
 	    for ($i = 0; $i < 12; $i++) {
 	        $randstring .= $characters[rand(0, strlen($characters)-1)];

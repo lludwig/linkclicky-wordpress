@@ -4,24 +4,29 @@ use LinkClickySDK\LinkClicky;
 
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
-function linkclicky_generateRandomString($length = 20) {
+function linkclicky_generateRandomString($length = 20):string {
 	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	$charactersLength = strlen($characters);
 	$randomString = '';
 	for ($i = 0; $i < $length; $i++) {
 		$randomString .= $characters[random_int(0, $charactersLength - 1)];
 	}
-	return $randomString;
+	return($randomString);
 }
 
-function linkclicky_create_sessionid() {
+function linkclicky_create_sessionid():string {
 	// store the uid
 	$sessionid = linkclicky_generateRandomString( 20 );
 	
 	return($sessionid);
 }
 
-function linkclicky_sessions_set_cookie( string $sessionid ) {
+function linkclicky_sessions_set_cookie( string $sessionid ):void {
+   header('Expires: Thu, 23 Mar 1972 07:00:00 GMT');
+   header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+   header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+   header('Pragma: no-cache');
+
    setcookie(LC_SESSIONS_COOKIE, $sessionid, [
       'expires'  => strtotime('+3650 days'),
       'path'     => '/',
@@ -53,20 +58,22 @@ function linkclicky_get_IP() {
    return ((string) linkclicky_sanitize_ip( $ip ));
 }
 
-function linkclicky_sanitize_ip($ip ) {
+function linkclicky_sanitize_ip($ip ):string {
 	return (preg_replace( '/[^0-9a-fA-F:., ]/', '', $ip ));
 }
 
 add_action( 'send_headers', 'linkclicky_sessions_init' );
-function linkclicky_sessions_init() {
-
+function linkclicky_sessions_init():void {
+   // debug
    do_action( 'qm/start', 'linkclicky_sessions_init' );
+
    // get cookie
    $sessionid = $_COOKIE[LC_SESSIONS_COOKIE] ?? null;
 
    $woopra_domain = get_option('linkclicky-woopra-domain');
 
-   if (!empty($woopra_domain)) { 
+   // create a Woopra cookie only if the option is set and we do not have one currently
+   if (!empty($woopra_domain) && empty($_COOKIE['wooTracker']) ) { 
       $woopra = new WoopraTracker([
          'domain'            => $woopra_domain,
          'cookie_domain'     => get_option('linkclicky-domain-name'),
@@ -79,24 +86,32 @@ function linkclicky_sessions_init() {
    }
 
    if(empty($sessionid)) {
-      $sessionid = linkclicky_create_sessionid();
-
       $lc_server = get_option('linkclicky-api-server');
       $lc_key = get_option('linkclicky-api-key');
       if (!empty($lc_server) && !empty($lc_key)) {
+         $sessionid = linkclicky_create_sessionid();
+
          $lc = new LinkClicky($lc_server, $lc_key);
 
          $data = [];
+         $data = $_GET;
+         // make sure the data is properly escaped
+         foreach ($data as $key => $value) {
+               $data[$key] = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+         }
+
+         // add woopra's cookie
          if (!empty($woopra_domain)) { 
-            $data = [
-               'wootracker' => $woopra->current_config['cookie_value'] ?? null
+            $data += [
+               'wootracker'   => $woopra->current_config['cookie_value'],
             ];
          }
          $lc->SessionAdd($sessionid, linkclicky_get_IP(), $data);
+
+         linkclicky_sessions_set_cookie($sessionid);
       }
    }
 
-   linkclicky_sessions_set_cookie($sessionid);
-
+   // debug
    do_action( 'qm/stop', 'linkclicky_sessions_init' );
 }
