@@ -24,13 +24,13 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // remove these options since we are uninstalled
 unregister_setting('linkclicky', 'linkclicky-domain-name');
-unregister_setting('linkclicky', 'linkclicky-ttl');
+unregister_setting('linkclicky', 'linkclicky-server-session-cookie');
 unregister_setting('linkclicky', 'linkclicky-api-server');
 unregister_setting('linkclicky', 'linkclicky-api-key');
 unregister_setting('linkclicky', 'linkclicky-woopra-domain');
 // delete the options from the database
 delete_option('linkclicky-domain-name');
-delete_option('linkclicky-ttl');
+delete_option('linkclicky-server-session-cookie');
 delete_option('linkclicky-api-server');
 delete_option('linkclicky-api-key');
 delete_option('linkclicky-woopra-domain');

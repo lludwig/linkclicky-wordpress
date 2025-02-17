@@ -4,7 +4,7 @@ use LinkClickySDK\LinkClicky;
 
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
-function linkclicky_generateRandomString($length = 20):string {
+function linkclicky_generateRandomString(int $length = 20):string {
 	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	$charactersLength = strlen($characters);
 	$randomString = '';
@@ -21,7 +21,7 @@ function linkclicky_create_sessionid():string {
 	return($sessionid);
 }
 
-function linkclicky_sessions_set_cookie( string $sessionid ):void {
+function linkclicky_sessions_set_cookie(string $sessionid):void {
    header('Expires: Thu, 23 Mar 1972 07:00:00 GMT');
    header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
    header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
@@ -39,7 +39,7 @@ function linkclicky_sessions_set_cookie( string $sessionid ):void {
    $_COOKIE[LC_SESSIONS_COOKIE]=$sessionid;
 }
 
-function linkclicky_get_IP() {
+function linkclicky_get_IP():string {
    $ip = '';
 
    // Precedence: if set, X-Forwarded-For > HTTP_X_FORWARDED_FOR > HTTP_CLIENT_IP > HTTP_VIA > REMOTE_ADDR
@@ -58,12 +58,13 @@ function linkclicky_get_IP() {
    return ((string) linkclicky_sanitize_ip( $ip ));
 }
 
-function linkclicky_sanitize_ip($ip ):string {
+function linkclicky_sanitize_ip( $ip ):string {
 	return (preg_replace( '/[^0-9a-fA-F:., ]/', '', $ip ));
 }
 
 add_action( 'send_headers', 'linkclicky_sessions_init' );
 function linkclicky_sessions_init():void {
+   global $linkclicky_session;
    // debug
    do_action( 'qm/start', 'linkclicky_sessions_init' );
 
@@ -71,45 +72,35 @@ function linkclicky_sessions_init():void {
    $sessionid = $_COOKIE[LC_SESSIONS_COOKIE] ?? null;
 
    $woopra_domain = get_option('linkclicky-woopra-domain');
+   $server_cookie = get_option('linkclicky-server-session-cookie', true);
 
-   // create a Woopra cookie only if the option is set and we do not have one currently
-   if (!empty($woopra_domain) && empty($_COOKIE['wooTracker']) ) { 
-      $woopra = new WoopraTracker([
-         'domain'            => $woopra_domain,
-         'cookie_domain'     => get_option('linkclicky-domain-name'),
-         'download_tracking' => true,
-         'outgoing_tracking' => true,
-         'idle_timeout'      => 3600000,
-      ]);
-
-      $woopra->set_woopra_cookie();
-   }
-
-   if(empty($sessionid)) {
-      $lc_server = get_option('linkclicky-api-server');
-      $lc_key = get_option('linkclicky-api-key');
-      if (!empty($lc_server) && !empty($lc_key)) {
-         $sessionid = linkclicky_create_sessionid();
-
-         $lc = new LinkClicky($lc_server, $lc_key);
-
-         $data = [];
-         $data = $_GET;
-         // make sure the data is properly escaped
-         foreach ($data as $key => $value) {
-               $data[$key] = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-         }
-
-         // add woopra's cookie
-         if (!empty($woopra_domain)) { 
-            $data += [
-               'wootracker'   => $woopra->current_config['cookie_value'],
-            ];
-         }
-         $lc->SessionAdd($sessionid, linkclicky_get_IP(), $data);
-
-         linkclicky_sessions_set_cookie($sessionid);
+   // either set the cookies via a server event or do it via javascript
+   if ($server_cookie) {
+      // create a Woopra cookie only if the option is set and we do not have one currently
+      if (!empty($woopra_domain) && empty($_COOKIE['wooTracker']) ) { 
+         $woopra = new WoopraTracker([
+            'domain'            => $woopra_domain,
+            'cookie_domain'     => get_option('linkclicky-domain-name'),
+            'download_tracking' => true,
+            'outgoing_tracking' => true,
+            'idle_timeout'      => 3600000,
+         ]);
+         $woopra->set_woopra_cookie();
       }
+
+      // only create a cookie if we don't have one 
+      if(empty($sessionid)) {
+         $sessionid = linkclicky_create_sessionid();
+         
+         linkclicky_sessions_set_cookie($sessionid);
+         // set it true so we can do some javascript in the linkclicky_js_footer function
+         $linkclicky_session = true;
+#         error_log('linkclicky_session3: ' . $linkclicky_session);
+      }
+   }
+   // still make sure we send the cookie but only via javascript session
+   else if(empty($sessionid)) {
+         $linkclicky_session = true;
    }
 
    // debug

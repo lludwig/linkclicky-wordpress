@@ -38,16 +38,15 @@ class LinkClicky_Admin {
 	}
 
 	public function init() {
-		// create and set defaults for the options
-		add_option( 'linkclicky-domain-name' , $this->default_domain_name );
-		add_option( 'linkclicky-ttl' , 30 );
+      // create and set defaults for the options
+      add_option( 'linkclicky-domain-name' , $this->default_domain_name );
 
-		// register the option types
-		register_setting( 'linkclicky', 'linkclicky-domain-name', ['type' => 'string', 'description' => 'If different than the default domain name used in confirmation. Useful when hosting a subdomain.' ]);
-		register_setting( 'linkclicky', 'linkclicky-ttl', ['type' => 'number', 'description' => 'How long should the cookie be active in days.' ] );
-		register_setting( 'linkclicky', 'linkclicky-api-server', ['type' => 'string', 'description' => 'LinkClicky\'s URI' ] );
-		register_setting( 'linkclicky', 'linkclicky-api-key', ['type' => 'string', 'description' => 'LinkClicky\'s API Key' ] );
-		register_setting( 'linkclicky', 'linkclicky-woopra-domain', ['type' => 'string', 'description' => 'Woopra Domain' ] );
+      // register the option types
+      register_setting( 'linkclicky', 'linkclicky-domain-name', [ 'type' => 'string' ]);
+      register_setting( 'linkclicky', 'linkclicky-server-session-cookie', [ 'type' => 'boolean', 'sanitize_callback' => 'linkclicky_sanitize_boolean', 'default' => true ] );
+		register_setting( 'linkclicky', 'linkclicky-api-server', [ 'type' => 'string' ] );
+		register_setting( 'linkclicky', 'linkclicky-api-key', [ 'type' => 'string' ] );
+		register_setting( 'linkclicky', 'linkclicky-woopra-domain', [ 'type' => 'string' ] );
 
 		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
 		add_action( 'admin_init', [ $this, 'settings' ] );
@@ -55,7 +54,7 @@ class LinkClicky_Admin {
 	
 	public function admin_menu() {
 		add_options_page(
-			__('LinkClicky Settings', 'liknclicky'),
+			__('LinkClicky Settings', 'linkclicky'),
                         __('LinkClicky', 'linkclicky'),
                         'manage_options',
                         'linkclicky',
@@ -63,14 +62,14 @@ class LinkClicky_Admin {
                 );
 	}
 
-        public function settings() {
-                add_settings_section( 'linkclicky-section', null, [$this, 'settings_section_description'], 'linkclicky' );
-                add_settings_field( 'linkclicky-domain-name', 'Domain Name Cookie', [$this, 'domain_name_field'], 'linkclicky', 'linkclicky-section' );
-                add_settings_field( 'linkclicky-ttl', 'Cookie Age', [$this, 'ttl_field'], 'linkclicky', 'linkclicky-section' );
-                add_settings_field( 'linkclicky-api-server', 'Linkclicky API Server', [$this, 'api_server'], 'linkclicky', 'linkclicky-section' );
-                add_settings_field( 'linkclicky-api-key', 'Linkclicky API Key', [$this, 'api_key'], 'linkclicky', 'linkclicky-section' );
-                add_settings_field( 'linkclicky-woopra-domain', 'Woopra Domain', [$this, 'woopra_domain'], 'linkclicky', 'linkclicky-section' );
-        }
+   public function settings() {
+      add_settings_section( 'linkclicky-section', null, [$this, 'settings_section_description'], 'linkclicky' );
+      add_settings_field( 'linkclicky-domain-name', 'Domain Name Cookie', [$this, 'domain_name_field'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-server-session', 'Server Session Cookie', [$this, 'server_session_cookie'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-api-server', 'Linkclicky Server', [$this, 'api_server'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-api-key', 'Linkclicky API Token', [$this, 'api_key'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-woopra-domain', 'Woopra Domain', [$this, 'woopra_domain'], 'linkclicky', 'linkclicky-section' );
+   }
 
 	public function settings_section_description(){
 		echo wpautop( "<span style=\"font-size: 18px;\">For more documentation on using this plugin, please visit our <a href=\"https://linkclicky.com/support/?utm_source=wpplugin&utm_medium=link&utm_campaign=settings\" target=\"_blank\">online manual</a>.</span>" );
@@ -89,17 +88,17 @@ class LinkClicky_Admin {
 	</form>
 </div>
 <?php
-	}
-
+   }
    public function domain_name_field() {
       $output  = '<input id="linkclicky-domain-name" type="text" name="linkclicky-domain-name" value="'. get_option('linkclicky-domain-name') .'" size="40">';
       $output .= ' <small>start the domain with a period to allow subdomains.</small>';
       echo $output;
    }
 
-   public function ttl_field() {
-      $output  = 'Domain Name: <input id="linkclicky-ttl" type="text" name="linkclicky-ttl" value="'. get_option('linkclicky-ttl') .'" size="3">';
-      $output .= ' <small>Time for the cooke to live (in days).</small>';
+   public function server_session_cookie() {
+      $checked = get_option('linkclicky-server-session-cookie', true);
+      $output  = '<input type="checkbox" id="linkclicky-server-session-cookie" name="linkclicky-server-session-cookie" value="1" ' . checked(1, $checked, false) . ' />';
+      $output .= ' <small>Create LinkClicky and Woopra session cookie via a server event (more reliable) than via Javascript.</small>';
       echo $output;
    }
 
@@ -200,6 +199,10 @@ class LinkClicky_Admin {
 		}     
 		return join('.', $arr);
 	}
+}
+
+function linkclicky_sanitize_boolean($value) {
+   return (bool) $value;
 }
 
 $linkclicky_admin = new LinkClicky_Admin();
