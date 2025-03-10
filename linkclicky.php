@@ -3,7 +3,7 @@
  * Plugin Name:         LinkClicky
  * Plugin URI:          https://linkclicky.com/support/wordpress/
  * Description:         WordPress plugin to compliment LinkClicky service
- * Version:             1.1.8
+ * Version:             1.1.9
  * Author:              LinkClicky
  * Author URI:          https://linkclicky.com/
  * Update URI:          https://linkclicky.com/support/wordpress/
@@ -15,28 +15,23 @@
 
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
-if (!defined('LINKCLICKY_VERSION_NUM'))
-	define('LINKCLICKY_VERSION_NUM', '1.1.8');
+if (!defined('LINKCLICKY_VERSION_NUM')) {
+   define('LINKCLICKY_VERSION_NUM', '1.1.9'); 
+}
 
-if ( ! defined( 'LINKCLICKY_PATH' ) ) {
-        define( 'LINKCLICKY_PATH', plugin_dir_path( __FILE__ ) );
+if (!defined('LINKCLICKY_PATH')) {
+        define('LINKCLICKY_PATH', plugin_dir_path( __FILE__ ));
 } 
 
 require_once( LINKCLICKY_PATH . 'includes/vendor/autoload.php');
-require_once( LINKCLICKY_PATH . 'admin/class-linkclicky-admin.php' );
-require_once( LINKCLICKY_PATH . 'includes/shortcodes.php' );
-require_once( LINKCLICKY_PATH . 'includes/myfunctions.php' );
-require_once( LINKCLICKY_PATH . 'includes/sessions.php' );
-require_once( LINKCLICKY_PATH . 'includes/LinkClicky.php' );
-require_once( LINKCLICKY_PATH . 'includes/LinkClickyUpdateChecker.php' );
-require_once( LINKCLICKY_PATH . 'includes/vendor/woopra/woopra/woopra_tracker.php');
-require_once( LINKCLICKY_PATH . 'includes/debug.php' );
+require_once( LINKCLICKY_PATH . 'admin/class-linkclicky-admin.php');
+require_once( LINKCLICKY_PATH . 'includes/shortcodes.php');
+require_once( LINKCLICKY_PATH . 'includes/myfunctions.php');
+require_once( LINKCLICKY_PATH . 'includes/LinkClicky.php');
+require_once( LINKCLICKY_PATH . 'includes/LinkClickyUpdateChecker.php');
+require_once( LINKCLICKY_PATH . 'includes/debug.php');
 
 define('LC_SESSIONS_COOKIE','_lc_s');
-
-// start off as false
-$linkclicky_session = false;
-#error_log('linkclicky_session1: ' . $linkclicky_session);
 
 // Add the ability to WP to create async loading scripts
 function linkclicky_add_async_forscript($url) {
@@ -70,24 +65,20 @@ function linkclicky_js_header() {
 }
 add_action('wp_enqueue_scripts','linkclicky_js_header');
 
+$rvmedia = get_option('linkclicky-rvmedia', true);
+if ($rvmedia) {
+   function linkclicky_js_header_rvmedia() {
+      wp_enqueue_script( 'linkclicky-rvmedia', 'https://'.get_option('linkclicky-api-server').'/js/t/rvmedia.js', null, null, ['strategy' => 'async']);
+   }
+   add_action('wp_enqueue_scripts','linkclicky_js_header_rvmedia');
+}
+
 // only display if we need to have the session data sent
 function linkclicky_js_footer() {
-   global $linkclicky_session;
-#   error_log('linkclicky_session2: ' . $linkclicky_session);
 ?>
 <script type="text/javascript" charset="utf-8">
 var _lc = _lc || {};
 _lc.domain = "<?php echo get_option('linkclicky-domain-name'); ?>";
-<?php
-   // only send for the first time we set the cookie
-   if ($linkclicky_session) {
-#      error_log('linkclicky if javascript');
-?>
-_lc.senddata = true;
-console.log('wp: ' + _lc.senddata);
-<?php
-   }
-?>
 </script>
 <?php
 }

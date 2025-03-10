@@ -7,5 +7,4 @@ $baseDir = dirname(dirname($vendorDir));
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'WoopraTracker' => $vendorDir . '/woopra/woopra/woopra_tracker.php',
 );

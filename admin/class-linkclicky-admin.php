@@ -43,10 +43,10 @@ class LinkClicky_Admin {
 
       // register the option types
       register_setting( 'linkclicky', 'linkclicky-domain-name', [ 'type' => 'string' ]);
-      register_setting( 'linkclicky', 'linkclicky-server-session-cookie', [ 'type' => 'boolean', 'sanitize_callback' => 'linkclicky_sanitize_boolean', 'default' => true ] );
+      register_setting( 'linkclicky', 'linkclicky-rvmedia', [ 'type' => 'boolean', 'sanitize_callback' => 'linkclicky_sanitize_boolean', 'default' => true ] );
+      register_setting( 'linkclicky', 'linkclicky-gobankingrates', [ 'type' => 'boolean', 'sanitize_callback' => 'linkclicky_sanitize_boolean', 'default' => true ] );
 		register_setting( 'linkclicky', 'linkclicky-api-server', [ 'type' => 'string' ] );
 		register_setting( 'linkclicky', 'linkclicky-api-key', [ 'type' => 'string' ] );
-		register_setting( 'linkclicky', 'linkclicky-woopra-domain', [ 'type' => 'string' ] );
 
 		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
 		add_action( 'admin_init', [ $this, 'settings' ] );
@@ -65,10 +65,10 @@ class LinkClicky_Admin {
    public function settings() {
       add_settings_section( 'linkclicky-section', null, [$this, 'settings_section_description'], 'linkclicky' );
       add_settings_field( 'linkclicky-domain-name', 'Domain Name Cookie', [$this, 'domain_name_field'], 'linkclicky', 'linkclicky-section' );
-      add_settings_field( 'linkclicky-server-session', 'Server Session Cookie', [$this, 'server_session_cookie'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-rvmedia', 'RVMedia Tracking', [$this, 'rvmedia'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-gobankingrates', 'GoBankingRates Tracking', [$this, 'gobankingrates'], 'linkclicky', 'linkclicky-section' );
       add_settings_field( 'linkclicky-api-server', 'Linkclicky Server', [$this, 'api_server'], 'linkclicky', 'linkclicky-section' );
       add_settings_field( 'linkclicky-api-key', 'Linkclicky API Token', [$this, 'api_key'], 'linkclicky', 'linkclicky-section' );
-      add_settings_field( 'linkclicky-woopra-domain', 'Woopra Domain', [$this, 'woopra_domain'], 'linkclicky', 'linkclicky-section' );
    }
 
 	public function settings_section_description(){
@@ -95,10 +95,17 @@ class LinkClicky_Admin {
       echo $output;
    }
 
-   public function server_session_cookie() {
+   public function gobankingrates() {
       $checked = get_option('linkclicky-server-session-cookie', true);
-      $output  = '<input type="checkbox" id="linkclicky-server-session-cookie" name="linkclicky-server-session-cookie" value="1" ' . checked(1, $checked, false) . ' />';
-      $output .= ' <small>Create LinkClicky and Woopra session cookie via a server event (more reliable) than via Javascript.</small>';
+      $output  = '<input type="checkbox" id="linkclicky-gobankingrates" name="linkclicky-gobankingrates" value="1" ' . checked(1, $checked, false) . ' />';
+      $output .= ' <small>Automatically append LinkClicky session data to any GoBankingRates widgets (not links).</small>';
+      echo $output;
+   }
+
+   public function rvmedia() {
+      $checked = get_option('linkclicky-server-session-cookie', true);
+      $output  = '<input type="checkbox" id="linkclicky-rvmedia" name="linkclicky-rvmedia" value="1" ' . checked(1, $checked, false) . ' />';
+      $output .= ' <small>Automatically append LinkClicky session data to any RVMedia widgets (not links).</small>';
       echo $output;
    }
 
@@ -110,12 +117,6 @@ class LinkClicky_Admin {
 
    public function api_key() {
       $output  = '<input id="linkclicky-api-key" type="text" name="linkclicky-api-key" value="'. get_option('linkclicky-api-key') .'" size="40">';
-      echo $output;
-   }
-
-   public function woopra_domain() {
-      $output  = '<input id="linkclicky-woopra-domain" type="text" name="linkclicky-woopra-domain" value="'. get_option('linkclicky-woopra-domain') .'" size="40">';
-      $output .= ' <small>If a domain is entered, LinkClicky will create a Woopra cookie.</small>';
       echo $output;
    }
 
