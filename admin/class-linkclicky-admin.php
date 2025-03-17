@@ -96,14 +96,14 @@ class LinkClicky_Admin {
    }
 
    public function gobankingrates() {
-      $checked = get_option('linkclicky-server-session-cookie', true);
+      $checked = get_option('linkclicky-gobankingrates', true);
       $output  = '<input type="checkbox" id="linkclicky-gobankingrates" name="linkclicky-gobankingrates" value="1" ' . checked(1, $checked, false) . ' />';
       $output .= ' <small>Automatically append LinkClicky session data to any GoBankingRates widgets (not links).</small>';
       echo $output;
    }
 
    public function rvmedia() {
-      $checked = get_option('linkclicky-server-session-cookie', true);
+      $checked = get_option('linkclicky-rvmedia', true);
       $output  = '<input type="checkbox" id="linkclicky-rvmedia" name="linkclicky-rvmedia" value="1" ' . checked(1, $checked, false) . ' />';
       $output .= ' <small>Automatically append LinkClicky session data to any RVMedia widgets (not links).</small>';
       echo $output;
