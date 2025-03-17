@@ -3,7 +3,7 @@
  * Plugin Name:         LinkClicky
  * Plugin URI:          https://linkclicky.com/support/wordpress/
  * Description:         WordPress plugin to compliment LinkClicky service
- * Version:             1.1.9
+ * Version:             1.2.0
  * Author:              LinkClicky
  * Author URI:          https://linkclicky.com/
  * Update URI:          https://linkclicky.com/support/wordpress/
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 if (!defined('LINKCLICKY_VERSION_NUM')) {
-   define('LINKCLICKY_VERSION_NUM', '1.1.9'); 
+   define('LINKCLICKY_VERSION_NUM', '1.2.0'); 
 }
 
 if (!defined('LINKCLICKY_PATH')) {
