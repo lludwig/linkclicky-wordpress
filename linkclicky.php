@@ -3,7 +3,7 @@
  * Plugin Name:         LinkClicky
  * Plugin URI:          https://linkclicky.com/support/wordpress/
  * Description:         WordPress plugin to compliment LinkClicky service
- * Version:             1.2.1
+ * Version:             1.2.3
  * Author:              LinkClicky
  * Author URI:          https://linkclicky.com/
  * Update URI:          https://linkclicky.com/support/wordpress/
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 if (!defined('LINKCLICKY_VERSION_NUM')) {
-   define('LINKCLICKY_VERSION_NUM', '1.2.1'); 
+   define('LINKCLICKY_VERSION_NUM', '1.2.3'); 
 }
 
 if (!defined('LINKCLICKY_PATH')) {
@@ -61,7 +61,7 @@ function add_action_links( $actions, $plugin_file ) {
 }
 
 function linkclicky_js_header() {
-	wp_enqueue_script( 'linkclicky', 'https://'.get_option('linkclicky-api-server').'/js/t/', null, null, ['strategy' => 'defer']);
+	wp_enqueue_script( 'linkclicky', 'https://'.get_option('linkclicky-api-server').'/js/t/', null, null, ['strategy' => 'async']);
 }
 add_action('wp_enqueue_scripts','linkclicky_js_header');
 
@@ -71,6 +71,14 @@ if ($rvmedia) {
       wp_enqueue_script( 'linkclicky-rvmedia', 'https://'.get_option('linkclicky-api-server').'/js/t/rvmedia.js', null, null, ['strategy' => 'async']);
    }
    add_action('wp_enqueue_scripts','linkclicky_js_header_rvmedia');
+}
+
+$gobankingrates = get_option('linkclicky-gobankingrates', true);
+if ($gobankingrates) {
+   function linkclicky_js_header_gobankingrates() {
+      wp_enqueue_script( 'linkclicky-gobankingrates', 'https://'.get_option('linkclicky-api-server').'/js/t/gobankingrates.js', null, null, ['strategy' => 'async']);
+   }
+   add_action('wp_enqueue_scripts','linkclicky_js_header_gobankingrates');
 }
 
 // only display if we need to have the session data sent
