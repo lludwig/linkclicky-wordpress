@@ -3,7 +3,7 @@
  * Plugin Name:         LinkClicky
  * Plugin URI:          https://linkclicky.com/support/wordpress/
  * Description:         WordPress plugin to compliment LinkClicky service
- * Version:             1.2.3
+ * Version:             1.2.4
  * Author:              LinkClicky
  * Author URI:          https://linkclicky.com/
  * Update URI:          https://linkclicky.com/support/wordpress/
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 if (!defined('LINKCLICKY_VERSION_NUM')) {
-   define('LINKCLICKY_VERSION_NUM', '1.2.3'); 
+   define('LINKCLICKY_VERSION_NUM', '1.2.4'); 
 }
 
 if (!defined('LINKCLICKY_PATH')) {
@@ -63,7 +63,7 @@ function add_action_links( $actions, $plugin_file ) {
 function linkclicky_js_header() {
 	wp_enqueue_script( 'linkclicky', 'https://'.get_option('linkclicky-api-server').'/js/t/', null, null, ['strategy' => 'async']);
 }
-add_action('wp_enqueue_scripts','linkclicky_js_header');
+add_action('wp_enqueue_scripts','linkclicky_js_header', 1);
 
 $rvmedia = get_option('linkclicky-rvmedia', true);
 if ($rvmedia) {
@@ -79,6 +79,36 @@ if ($gobankingrates) {
       wp_enqueue_script( 'linkclicky-gobankingrates', 'https://'.get_option('linkclicky-api-server').'/js/t/gobankingrates.js', null, null, ['strategy' => 'async']);
    }
    add_action('wp_enqueue_scripts','linkclicky_js_header_gobankingrates');
+}
+
+// if quinstreet is enabled
+$quinstreet = get_option('linkclicky-quinstreet');
+if (!empty($quinstreet)) {
+   function linkclicky_js_header_quinstreet() {
+      wp_enqueue_script('linkclicky-quinstreet', 'https://www.nextinsure.com/listingdisplay/loader/qdgt', [], null, ['strategy' => 'async'] );
+      global $quinstreet;
+      $inline_js  = "<script>" . PHP_EOL;
+      $inline_js .= "function waitForCookie(cookieName, callback, maxAttempts = 20, interval = 70) {" . PHP_EOL;
+      $inline_js .= "  let attempts = 0;" . PHP_EOL;
+      $inline_js .= "  const checkCookie = setInterval(() => {" . PHP_EOL;
+      $inline_js .= "  const cookieValue = linkclicky_session();" . PHP_EOL;
+      $inline_js .= "  if (cookieValue || attempts >= maxAttempts) {" . PHP_EOL;
+      $inline_js .= "    clearInterval(checkCookie);" . PHP_EOL;
+      $inline_js .= "    callback(cookieValue || '');" . PHP_EOL;
+      $inline_js .= "  }" . PHP_EOL;
+      $inline_js .= "  attempts++;" . PHP_EOL;
+      $inline_js .= "  }, interval);" . PHP_EOL;
+      $inline_js .= "}" . PHP_EOL;
+      $inline_js .= "var quidget_srcs = {'cc': " . $quinstreet . "};" . PHP_EOL;
+      $inline_js .= "var quidget_tracking_query = { 'var2': '', 'var3': Date.now() };" . PHP_EOL;
+      $inline_js .= "waitForCookie('_lc_s', (cookieValue) => {" . PHP_EOL;
+      $inline_js .= "  console.log('inserting var2');" . PHP_EOL;
+      $inline_js .= "  quidget_tracking_query.var2 = 's:' + cookieValue;" . PHP_EOL;
+      $inline_js .= "});" . PHP_EOL;
+      $inline_js .= "</script>" . PHP_EOL;
+      wp_add_inline_script('linkclicky-quinstreet', $inline_js, 'before');
+   }
+   add_action('wp_enqueue_scripts','linkclicky_js_header_quinstreet', 200);
 }
 
 // only display if we need to have the session data sent

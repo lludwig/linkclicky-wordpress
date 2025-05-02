@@ -45,6 +45,7 @@ class LinkClicky_Admin {
       register_setting( 'linkclicky', 'linkclicky-domain-name', [ 'type' => 'string' ]);
       register_setting( 'linkclicky', 'linkclicky-rvmedia', [ 'type' => 'boolean', 'sanitize_callback' => 'linkclicky_sanitize_boolean', 'default' => true ] );
       register_setting( 'linkclicky', 'linkclicky-gobankingrates', [ 'type' => 'boolean', 'sanitize_callback' => 'linkclicky_sanitize_boolean', 'default' => true ] );
+      register_setting( 'linkclicky', 'linkclicky-quinstreet', [ 'type' => 'string', 'sanitize_callback' => 'linkclicky_sanitize_number' ] );
 		register_setting( 'linkclicky', 'linkclicky-api-server', [ 'type' => 'string' ] );
 		register_setting( 'linkclicky', 'linkclicky-api-key', [ 'type' => 'string' ] );
 
@@ -67,6 +68,7 @@ class LinkClicky_Admin {
       add_settings_field( 'linkclicky-domain-name', 'Domain Name Cookie', [$this, 'domain_name_field'], 'linkclicky', 'linkclicky-section' );
       add_settings_field( 'linkclicky-rvmedia', 'RVMedia Tracking', [$this, 'rvmedia'], 'linkclicky', 'linkclicky-section' );
       add_settings_field( 'linkclicky-gobankingrates', 'GoBankingRates Tracking', [$this, 'gobankingrates'], 'linkclicky', 'linkclicky-section' );
+      add_settings_field( 'linkclicky-quinstreet', 'QuinStreet SRC number', [$this, 'quinstreet'], 'linkclicky', 'linkclicky-section' );
       add_settings_field( 'linkclicky-api-server', 'Linkclicky Server', [$this, 'api_server'], 'linkclicky', 'linkclicky-section' );
       add_settings_field( 'linkclicky-api-key', 'Linkclicky API Token', [$this, 'api_key'], 'linkclicky', 'linkclicky-section' );
    }
@@ -99,6 +101,12 @@ class LinkClicky_Admin {
       $checked = get_option('linkclicky-gobankingrates', true);
       $output  = '<input type="checkbox" id="linkclicky-gobankingrates" name="linkclicky-gobankingrates" value="1" ' . checked(1, $checked, false) . ' />';
       $output .= ' <small>Automatically append LinkClicky session data to any GoBankingRates widgets (not links).</small>';
+      echo $output;
+   }
+
+   public function quinstreet() {
+      $output  = '<input id="linkclicky-quinstreet" type="text" name="linkclicky-quinstreet" value="'. get_option('linkclicky-quinstreet') .'" size="10">';
+      $output .= ' <small>If present, LinkClicky will automatically install their JavaScript and append session data to their quidgets.</small>';
       echo $output;
    }
 
@@ -206,4 +214,8 @@ function linkclicky_sanitize_boolean($value) {
    return (bool) $value;
 }
 
+function linkclicky_sanitize_number($value) {
+   $sanitized = preg_replace('/[^0-9]/', '', (string)$value);
+   return (string) $sanitized;
+}
 $linkclicky_admin = new LinkClicky_Admin();

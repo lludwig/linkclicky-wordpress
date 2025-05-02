@@ -26,11 +26,13 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 unregister_setting('linkclicky', 'linkclicky-domain-name');
 unregister_setting('linkclicky', 'linkclicky-rvmedia');
 unregister_setting('linkclicky', 'linkclicky-gobankingrates');
+unregister_setting('linkclicky', 'linkclicky-quinstreet');
 unregister_setting('linkclicky', 'linkclicky-api-server');
 unregister_setting('linkclicky', 'linkclicky-api-key');
 // delete the options from the database
 delete_option('linkclicky-domain-name');
 delete_option('linkclicky-rvmedia');
 delete_option('linkclicky-gobankingrates');
+delete_option('linkclicky-quinstreet');
 delete_option('linkclicky-api-server');
 delete_option('linkclicky-api-key');
