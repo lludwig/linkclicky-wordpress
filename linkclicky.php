@@ -1,12 +1,12 @@
 <?php 
 /**
  * Plugin Name:         LinkClicky
- * Plugin URI:          https://linkclicky.com/support/wordpress/
+ * Plugin URI:          https://linkclicky.com/support/linkclicky-wordpress-plugin/
  * Description:         WordPress plugin to compliment LinkClicky service
- * Version:             1.2.4
+ * Version:             1.2.5
  * Author:              LinkClicky
  * Author URI:          https://linkclicky.com/
- * Update URI:          https://linkclicky.com/support/wordpress/
+ * Update URI:          https://linkclicky.com/support/linkclicky-wordpress-plugin/
  * License:             GNU General Public License v3 or later
  * License URI:         http://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least:   6.0.1
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) or die( 'Cheatin&#8217; uh?' );
 
 if (!defined('LINKCLICKY_VERSION_NUM')) {
-   define('LINKCLICKY_VERSION_NUM', '1.2.4'); 
+   define('LINKCLICKY_VERSION_NUM', '1.2.5'); 
 }
 
 if (!defined('LINKCLICKY_PATH')) {

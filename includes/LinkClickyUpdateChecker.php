@@ -23,7 +23,7 @@ class LinkClickyUpdateChecker{
       $this->plugin_slug   = 'linkclicky';
       $this->version       = LINKCLICKY_VERSION_NUM;
       $this->cache_key     = 'linkclicky_custom_upd';
-      $this->cache_allowed = false;
+      $this->cache_allowed = true;
       $this->info_url      = 'https://api.linkclicky.com/wordpressplugin/info.json';
 
       add_filter( 'plugins_api', [ $this, 'info' ], 20, 3 );
@@ -50,7 +50,7 @@ class LinkClickyUpdateChecker{
             return false;
          }
 
-         set_transient( $this->cache_key, $remote, DAY_IN_SECONDS );
+         set_transient( $this->cache_key, $remote, 12 * HOUR_IN_SECONDS);
 
       }
 
